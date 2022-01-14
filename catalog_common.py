@@ -1,35 +1,79 @@
 """catalog_common.py
 Used as the first thing in all jupyter index files.
 This is the first thing executed.
+
+Passing arguments in:
+sys.argv:
+0 = this scripts name
+1 = header title - no spaces! use '_' to indicate spaces
 """
 import datetime
+import sys
 from IPython.display import Markdown as md
 from IPython.core.display import display, HTML
 
-repo_name = 'v11_BETA_2021-12-18'
-bulkdata_date = 'December 18, 2021'
+
+
+repo_name = 'v11_BETA_2022-01-07_test'
+bulkdata_date = 'January 7, 2022'
 cat_creation_date = datetime.datetime.now()
 extData_loc = 'c:/MyDocs/OpenFF/data/external_refs/'
 transformed_loc = 'c:/MyDocs/OpenFF/data/transformed/'
 
 
-def ID_header():
-    display(md(f"""Download from FracFocus: **{bulkdata_date}**; Data repository: **{repo_name}**; This file generated: **{cat_creation_date:%B %d, %Y}**."""))
+def ID_header(title = '',incl_links=True,link_up_level=False):
+#     if len(sys.argv)<2:
+#         title = ''
+#     else:
+#         title = sys.argv[1].replace('_',' ')
+    local_prefix = ''
+    if link_up_level:
+        local_prefix= '../'
+        
+    logo = """<img src="https://storage.googleapis.com/open-ff-common/openFF_logo.png" alt="openFF logo" width="100" height="100">"""
+    source = f"""Data repository: {repo_name}; This file generated: {cat_creation_date:%B %d, %Y}."""
+    cat_links = f"""<td width=20%>
+                    <p style="text-align: center; font-size:120%"> 
+                      <a href="{local_prefix}Open-FF_Catalog.html" title="Table of Contents for OpenFF Catalog"> Catalog Top Page</a><br>
+                      <a href="{local_prefix}Open-FF_Chemicals.html" title="OpenFF Chemical index"> Chemical Index </a><br>
+                      <a href="{local_prefix}Open-FF_Synonyms.html" title="OpenFF Synonyms index"> Synonym Index </a><br>
+                      <a href="{local_prefix}Open-FF_Companies.html" title="OpenFF Company names translation table"> Company Translation table </a><br>
+                      <a href="https://codeocean.com/capsule/9423121/tree" title="Source code and reference data sets"> CodeOcean Project </a><br>
+                    </p>
+                    </td>
+                """
+    #                       <a href="https://frackingchemicaldisclosure.wordpress.com/"> Blog </a><br>
+    #                <p style="text-align: left; font-size:120%"> Links: </p>
+
+    if incl_links: cat_txt = cat_links
+    else: cat_txt = ''
+    table = f"""<style>
+                </style>
+                <table style='margin: 0 auto' >
+                <tr>
+                <td width=10%>{logo}</td>
+                <td><p style="text-align: center; font-size:300%">{title}</p><br>
+                    <p style="text-align: center; font-size:100%">{source}
+                </td>
+                {cat_txt}
+            </table>"""
+    display(HTML(table))
 
 ###############################  Used to make repository accessible ####################
-import sys
+#import sys
 sys.path.insert(0,'c:/MyDocs/OpenFF/src/')
 import common.code.Analysis_set_remote as ana_set
 import common.code.get_repo_data as grd
 import common.code.get_google_map as ggmap
 
-# #############################  Make indices full page ###################################
-# display(HTML("<style>.container { width:100% !important; }</style>"))
+def set_page_param():
+    # #############################  Make indices full page ###################################
+    display(HTML("<style>.jp-Cell { width: 80% !important; }</style>"))
 
 
 ###########################  for itables #####################################
 # this code is necessary to keep itables working with new ngcovert templates
-from IPython.display import HTML, display
+#from IPython.display import HTML, display
 from time import sleep
 display(HTML("""
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
@@ -136,5 +180,5 @@ def xlate_to_str(inp,sep='; ',trunc=False,tlen=20,totallen = 5000,
     return out
 
 
-########################### To execute at the top of the file
-ID_header()
+########################### To execute at the top of the calling file
+# ID_header()

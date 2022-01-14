@@ -14,15 +14,24 @@ import numpy as np
 update_fn = 'c:/MyDocs/OpenFF/data/transformed/upload_dates.csv'
 
 #!!!  Don't forget to change the repo in catalog_common!
-today_str = '2021-12-19' # used as file name when finalizing and uploading
+today_str = '2022-01-07' # used as file name when finalizing and uploading
 make_final = False
-
-
-
 today = datetime.date.today()
+
+
+def add_favicon(fn):
+    # also adds favicon to browser tab
+    with open(fn,'r',encoding='utf-8') as f:
+        alltext = f.read()
+    alltext  = alltext.replace('</title>',
+                               '</title>\n<link rel="icon" href="https://storage.googleapis.com/open-ff-common/favicon.ico">',1)
+    with open(fn,'w',encoding='utf-8') as f:
+        f.write(alltext)
+
 
 s= "jupyter nbconvert --no-input --ExecutePreprocessor.allow_errors=True --ExecutePreprocessor.timeout=-1 --execute new_data_summary.ipynb --to=html "
 print(subprocess.run(s,capture_output=False))
+add_favicon(fn='new_data_summary.html')
 
 if make_final:
     print(f'Ready to make a final upload using <{today_str}> as file name.')

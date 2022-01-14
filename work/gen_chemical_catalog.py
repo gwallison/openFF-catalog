@@ -57,7 +57,8 @@ class Web_gen():
                                 'Purpose', 'CASNumber', 'bgCAS','primarySupplier',
                                 'bgIngredientName','in_std_filtered',
                                 'TradeName_trunc','Purp_trunc','has_TBWV',
-                                'within_total_tolerance','has_water_carrier'] 
+                                'within_total_tolerance','has_water_carrier',
+                                'carrier_status'] 
         self.caslist = caslist
         self.allrec = ana_set.Catalog_set(repo = self.repo_name,
                                           force_new_creation=True,
@@ -194,13 +195,22 @@ class Web_gen():
             shutil.copyfile(self.jupyter_fn,self.outdir+chem+an_fn)
 
     def fix_html_title(self,cas):
+        # also adds favicon to browser tab
         with open(self.jupyter_fn,'r',encoding='utf-8') as f:
             alltext = f.read()
         alltext  = alltext.replace('<title>chemical_report</title>',
-                                   f'<title>{cas}: Open-FF report</title>',1)
+                                   f'<title>{cas}: Open-FF report</title>\n<link rel="icon" href="https://storage.googleapis.com/open-ff-common/favicon.ico">',1)
         with open(self.jupyter_fn,'w',encoding='utf-8') as f:
             f.write(alltext)
             
+    def add_favicon(self,fn):
+        # also adds favicon to browser tab
+        with open(fn,'r',encoding='utf-8') as f:
+            alltext = f.read()
+        alltext  = alltext.replace('</title>',
+                                   '</title>\n<link rel="icon" href="https://storage.googleapis.com/open-ff-common/favicon.ico">',1)
+        with open(fn,'w',encoding='utf-8') as f:
+            f.write(alltext)
 
     def make_10perc_dict(self,fromScratch=True):
         if fromScratch:
@@ -235,6 +245,7 @@ class Web_gen():
         print(f'*** creating index from {fn}')
         s= f'jupyter nbconvert --no-input --ExecutePreprocessor.allow_errors=True --ExecutePreprocessor.timeout=-1 --execute {fn} --to=html '
         subprocess.run(s)
+        self.add_favicon(name+'.html')
         try:
             shutil.move(name+'.html',self.outdir+name+'.html')
         except:
@@ -246,7 +257,7 @@ class Web_gen():
                'Open-FF_TradeNames.ipynb','Open-FF_CASNumber_and_IngredientName.ipynb',
                'Open-FF_Data_Dictionary.ipynb','Open-FF_Conflicting_Chemical_IDs.ipynb'
                ]
-        lst = ['Open-FF_Chemicals.ipynb']
+        #lst = ['Open-FF_Chemicals.ipynb']
         for fn in lst:
             self.gen_index_page(fn)
             
