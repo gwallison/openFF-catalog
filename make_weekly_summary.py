@@ -13,9 +13,9 @@ import numpy as np
 
 update_fn = 'c:/MyDocs/OpenFF/data/transformed/upload_dates.csv'
 
-#!!!  Don't forget to change the repo in catalog_common!
-today_str = '2022-01-07' # used as file name when finalizing and uploading
-make_final = False
+#!!!  Don't forget to change the repo and date in catalog_common!
+today_str = '2022-03-12' # used as file name when finalizing and uploading
+make_final = True
 today = datetime.date.today()
 
 

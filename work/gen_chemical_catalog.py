@@ -19,8 +19,6 @@ import shutil
 import subprocess
 from datetime import datetime
 import pickle
-#import papermill as pm
-#import core.Analysis_set as ana_set
 
 today = datetime.today()
 
@@ -38,7 +36,7 @@ class Web_gen():
         self.repo_name = repo_name
         self.data_date = data_date
         self.outdir = './out/website/'
-        #self.outdir = './tmp/website_test/'
+        self.scopedir = self.outdir+'./scope/'
         self.css_fn = './work/style.css'
         #self.default_empty_fn = './website_gen/default_empty.html'
         self.jupyter_fn = './work/chemical_report.html'
@@ -58,7 +56,7 @@ class Web_gen():
                                 'bgIngredientName','in_std_filtered',
                                 'TradeName_trunc','Purp_trunc','has_TBWV',
                                 'within_total_tolerance','has_water_carrier',
-                                'carrier_status'] 
+                                'carrier_status','massComp','massCompFlag'] 
         self.caslist = caslist
         self.allrec = ana_set.Catalog_set(repo = self.repo_name,
                                           force_new_creation=True,
@@ -75,9 +73,12 @@ class Web_gen():
 #         if caslist != []:
 #             self.allrec = self.allrec[self.allrec.bgCAS.isin(caslist)]
 # =============================================================================
+        w_chem = ~(self.allrec.no_chem_recs)
+        filtered = self.allrec.in_std_filtered
         self.num_events = len(self.allrec.UploadKey.unique())
-        self.num_events_wo_FFV1 = len(self.allrec[~self.allrec.no_chem_recs].UploadKey.unique())
-        self.num_events_fil = len(self.allrec[self.allrec.in_std_filtered].UploadKey.unique())
+        self.num_events_wo_FFV1 = len(self.allrec[w_chem].UploadKey.unique())
+        self.num_events_fil = len(self.allrec[filtered].UploadKey.unique())
+        self.num_events_fil_wo_FFV1 = len(self.allrec[filtered & w_chem].UploadKey.unique())
 
         
     def initialize_dir(self,dir):
@@ -86,6 +87,7 @@ class Web_gen():
                       
     def make_dir_structure(self,caslist=[]):
         self.initialize_dir(self.outdir)
+        self.initialize_dir(self.scopedir)
         #for cas in caslist:
         #    self.initialize_dir(self.outdir+cas)
         shutil.copyfile(self.css_fn,self.outdir+'style.css')
@@ -126,9 +128,11 @@ class Web_gen():
                          IngredientName='?',eh_IngredientName='?'):
         """put numbers used by all analyses into a file for access
         within Jupyter scripts."""
-        vname = ['tot_num_disc','tot_num_disc_less_FFV1','tot_num_disc_fil',
+        vname = ['tot_num_disc','tot_num_disc_less_FFV1',
+                 'tot_num_disc_fil','tot_num_disc_fil_less_FFV1',
                  'data_date','today','target_cas']
-        vals = [self.num_events,self.num_events_wo_FFV1,self.num_events_fil,
+        vals = [self.num_events,self.num_events_wo_FFV1,
+                self.num_events_fil,self.num_events_fil_wo_FFV1,
                 self.data_date,today,cas]
         pd.DataFrame({'varname':vname,'value':vals}).to_csv(self.ref_fn,
                                                             index=False)
@@ -180,7 +184,7 @@ class Web_gen():
             #if tt.bgMass.max() >0:
             #    continue
             mx = round_sig(tt.calcMass.max())
-            print(f'{i}: ** {chem} **  n recs: {len(tt):,}; max mass: {mx:,}')
+            print(f'{i}: ** {chem:>13} **  n recs: {len(tt):>7,}; max mass: {mx:>10,}')
             
             if len(tt)>0:
                 tt['map_link'] = tt.apply(lambda x: self.make_map_link(x),axis=1)
@@ -193,7 +197,22 @@ class Web_gen():
             self.fix_html_title(chem)
             an_fn = f'/analysis_{chem}.html'
             shutil.copyfile(self.jupyter_fn,self.outdir+chem+an_fn)
-
+            
+    def make_scope_data(self):
+        # prepare the downloadable data sets
+        print('  -- working on scope data sets')
+        # water and sand data
+        gb1 = self.allrec[self.allrec.in_std_filtered].groupby('UploadKey',as_index=False)\
+            [['TotalBaseWaterVolume','date','OperatorName','bgOperatorName',
+             'StateName','CountyName','APINumber','Latitude','Longitude']].first()
+        gb1['api10'] = gb1.APINumber.str[:10]
+        cond = self.allrec.bgCAS=='14808-60-7'
+        gb2 = self.allrec[cond&(self.allrec.in_std_filtered)].groupby('UploadKey',as_index=False)\
+            ['calcMass'].sum().rename({'calcMass':'sandMass'},axis=1)
+        out = pd.merge(gb1,gb2,on='UploadKey',how='left')
+        out.drop('UploadKey',axis=1,inplace=True)
+        out.to_csv(self.scopedir+'water_sand.csv',encoding='utf-8',index=False)
+        
     def fix_html_title(self,cas):
         # also adds favicon to browser tab
         with open(self.jupyter_fn,'r',encoding='utf-8') as f:
@@ -255,9 +274,9 @@ class Web_gen():
         lst = ['Open-FF_Catalog.ipynb','Open-FF_Chemicals.ipynb',
                'Open-FF_Synonyms.ipynb','Open-FF_Companies.ipynb',
                'Open-FF_TradeNames.ipynb','Open-FF_CASNumber_and_IngredientName.ipynb',
-               'Open-FF_Data_Dictionary.ipynb','Open-FF_Conflicting_Chemical_IDs.ipynb'
-               ]
-        #lst = ['Open-FF_Chemicals.ipynb']
+               'Open-FF_Data_Dictionary.ipynb','Open-FF_Conflicting_Chemical_IDs.ipynb',
+               'Open-FF_Scope_and_Aggregate_Stats.ipynb']
+        #lst = ['Open-FF_Chemicals.ipynb','Open-FF_Data_Dictionary.ipynb']
         for fn in lst:
             self.gen_index_page(fn)
             

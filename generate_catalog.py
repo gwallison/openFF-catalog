@@ -11,7 +11,7 @@ a chemical catelog.
 from catalog_common import repo_name, bulkdata_date
 import work.gen_chemical_catalog as gen_cat
 
-mode = 'test'
+#mode = 'test'
 mode = 'main'
 
 if mode=='test':
@@ -30,4 +30,5 @@ else:
                          data_date=bulkdata_date,caslist=[])
 
 wg.make_chem_list()
+wg.make_scope_data()
 wg.make_new_index_pages()

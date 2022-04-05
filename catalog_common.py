@@ -14,8 +14,8 @@ from IPython.core.display import display, HTML
 
 
 
-repo_name = 'v11_BETA_2022-01-07_test'
-bulkdata_date = 'January 7, 2022'
+repo_name = 'v12_BETA_2022_04_02'
+bulkdata_date = 'April 2, 2022'
 cat_creation_date = datetime.datetime.now()
 extData_loc = 'c:/MyDocs/OpenFF/data/external_refs/'
 transformed_loc = 'c:/MyDocs/OpenFF/data/transformed/'
@@ -57,6 +57,9 @@ def ID_header(title = '',incl_links=True,link_up_level=False):
                 </td>
                 {cat_txt}
             </table>"""
+#     # Temporary alert about SkyTruth changes
+#     table = table + """<H4> Note: As of March 2022, the OpenFF Catalog no longer includes the archive of 2011-2013 chemical records (the "SkyTruth" archive). 
+#     All data are strictly from the FracFocus bulk download.</H4>"""
     display(HTML(table))
 
 ###############################  Used to make repository accessible ####################
@@ -144,18 +147,6 @@ def getAPIMapLink(row):
     s = getLink(row)
     return ggmap.wrap_URL_in_html(s,row.APINumber)
 
-# def xlate_to_str(inp,sep=' ',trunc=False,tlen=20,totallen = 5000):
-#     try:
-#         l = list(inp)
-#         out = ''
-#         for s in l:
-#             if trunc:
-#                 if len(s)>tlen:
-#                     s = s[:tlen-3]+ '...'
-#             out+= s+sep
-#     except:
-#         return ''
-#     return out[:-(len(sep))]
 
 def xlate_to_str(inp,sep='; ',trunc=False,tlen=20,totallen = 5000,
                 maxlen=10000,maxMessage='Too many items to display'):
@@ -179,6 +170,3 @@ def xlate_to_str(inp,sep='; ',trunc=False,tlen=20,totallen = 5000,
         out = out[:totallen]+' ...' 
     return out
 
-
-########################### To execute at the top of the calling file
-# ID_header()
