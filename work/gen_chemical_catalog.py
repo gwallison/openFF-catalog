@@ -68,7 +68,7 @@ class Web_gen():
                                 'within_total_tolerance','has_water_carrier',
                                 'carrier_status','massComp','massCompFlag',
                                 'cleanMI','loc_within_state',
-                                'loc_within_county'] 
+                                'loc_within_county','rq_lbs'] 
         self.caslist = caslist
         self.allrec = ana_set.Full_set(repo = self.repo_name,
                                           force_new_creation=True,
@@ -303,25 +303,6 @@ class Web_gen():
         # constrained version of whole set to use in colab notebooks
         #  broken into tables
         print('  -- Making colab tables')
-        # t = self.allrec[self.allrec.in_std_filtered].groupby('UploadKey',as_index=False)\
-        #         [['TotalBaseWaterVolume','date','bgOperatorName','TVD',
-        #           'bgStateName','bgCountyName','APINumber','bgLatitude','bgLongitude',
-        #           'loc_name_mismatch','loc_within_state','loc_within_county',
-        #           'latlon_too_coarse']].first()
-        # t.to_csv(self.colabdir+'disclosures.zip',quotechar='$',encoding='utf-8',index=False,
-        #          compression={'method': 'zip', 'archive_name': 'disclosures.csv'})
-        # t = self.allrec[self.allrec.in_std_filtered].groupby(['UploadKey','bgCAS'],as_index=False)\
-        #         [['calcMass','PercentHFJob']].sum()
-        # t.to_csv(self.colabdir+'chemicals.zip',quotechar='$',encoding='utf-8',index=False,
-        #          compression={'method': 'zip', 'archive_name': 'chemicals.csv'})
-
-        # t = self.allrec[self.allrec.in_std_filtered].groupby(['bgCAS'],as_index=False)\
-        #         [['epa_pref_name','bgIngredientName',
-        #           'is_on_CWA','is_on_DWSHA',
-        #           'is_on_PFAS_list','is_on_diesel','is_on_prop65',
-        #           'is_on_TEDX','is_on_UVCB','is_on_volatile_list']].first()
-        # t.to_csv(self.colabdir+'bgCAS.zip',quotechar='$',encoding='utf-8',index=False,
-        #          compression={'method': 'zip', 'archive_name': 'bgCAS.csv'})
         
         ## make sm_dataframe zip
         sm_df_tmp = r"C:\MyDocs\OpenFF\src\openFF-catalog\work\sm_dataframe" #'./work/sm_pickles/'
@@ -460,7 +441,7 @@ class Web_gen():
                'Open-FF_States_and_Counties.ipynb',
                'Open-FF_Auxillary_Data.ipynb',
                'Ohio_Drilling_Chemicals.ipynb']
-        lst = ['Open-FF_Catalog.ipynb']
+        #lst = ['Open-FF_Catalog.ipynb']
         for fn in lst:
             self.gen_index_page(fn)
             

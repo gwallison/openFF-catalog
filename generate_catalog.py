@@ -14,8 +14,8 @@ import work.gen_chemical_catalog as gen_cat
 mode = 'test'
 mode = 'main'
 
-outdir = r"E:\working\catalog\website_Jun30_2022/"
-
+outdir = r"E:\working\catalog\website_Jul30_2022/"
+outdir = r"C:\MyDocs\OpenFF\src\openFF-catalog\out\july30_2022\website_Jul30_2022/"
 if mode=='test':
     wg = gen_cat.Web_gen(repo_name=repo_name,
                           data_date=bulkdata_date,
@@ -40,4 +40,4 @@ else:
 #wg.make_state_set()
 #wg.make_scope_data()
 wg.make_colab_set()
-#wg.make_new_index_pages()
+wg.make_new_index_pages()

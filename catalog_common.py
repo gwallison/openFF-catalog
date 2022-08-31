@@ -19,8 +19,9 @@ warnings.filterwarnings('ignore')
 
 
 #repo_name = 'v14_2022_04_06'
-repo_name = 'v14_BETA_2022_06_25'
-bulkdata_date = 'June 25, 2022'
+#repo_name = 'v15_2022_07_30'
+repo_name = 'v15_beta_2022_08_14'
+bulkdata_date = 'July 30, 2022'
 cat_creation_date = datetime.datetime.now()
 extData_loc = 'c:/MyDocs/OpenFF/data/external_refs/'
 transformed_loc = 'c:/MyDocs/OpenFF/data/transformed/'
@@ -40,7 +41,7 @@ def ID_header(title = '',line2 ='', subtitle = '',imagelink='',
     source = f"""This file generated on {cat_creation_date:%B %d, %Y} from data repository: {repo_name}."""
     cat_links = f"""<td width=20%>
                     <p style="text-align: center; font-size:120%"> 
-                      <a href="https://frackingchemicaldisclosure.wordpress.com/data-navigator/"> Navigator </a><br>
+                      <a href="{local_prefix}Open-FF_Catalog.html" title="Local Navigator"> Navigator Page </a><br>
                       <a href="{local_prefix}Open-FF_Chemicals.html" title="OpenFF Chemical index"> Chemical Index </a><br>
                       <a href="{local_prefix}Open-FF_Synonyms.html" title="OpenFF Synonyms index"> Synonym Index </a><br>
                       <a href="{local_prefix}Open-FF_Companies.html" title="OpenFF Company names translation table"> Company Translation table </a><br>
