@@ -1,0 +1,208 @@
+
+
+ 
+ 
+ 
+
+ 
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+ 
+
+  
+   
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+ <head>
+ <meta http-equiv="X-UA-Compatible" content="IE=8;" />
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@NLM_NIH">
+<meta name="twitter:title" content="ChemIDplus and the Drug Information Portal Content Available From PubChem Only Starting December 2022. NLM Technical Bulletin. 2022 Jul&#8211;Aug">
+<meta name="twitter:description" content=" The NLM Technical Bulletin is your source to stay informed about NLM products and services.">
+<meta name="twitter:image" content="https://www.nlm.nih.gov/pubs/techbull/images/nlm_tech_bulletin_graphic_twitter.jpg">
+<meta property="og:url" content="https://www.nlm.nih.gov/pubs/techbull/tb.html" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="ChemIDplus and the Drug Information Portal Content Available From PubChem Only Starting December 2022. NLM Technical Bulletin. 2022 Jul&#8211;Aug" />
+<meta property="og:description" content="The NLM Technical Bulletin is your source to stay informed about NLM products and services." />
+<meta property="og:image" content="https://www.nlm.nih.gov/pubs/techbull/images/nlm_tech_bulletin_graphic_facebook.jpg" /> 
+  <link type="text/css" href="/pubs/techbull/styles/reset.css" rel="stylesheet" />
+
+<link type="text/css" href="/pubs/techbull/styles/technicalBulletin.css" rel="stylesheet" />
+<!--Call jQuery-->
+<script src="//assets.nlm.nih.gov/jquery/jquery-latest.min.js"></script>
+<script src="//assets.nlm.nih.gov/jquery/jquery-migrate-latest.min.js"></script>
+<script src="/pubs/techbull/scripts/techbull.js" type="text/javascript" language="javascript"></script>
+<!--[if lte IE 8]>
+<script type="text/javascript" src="/scripts/PIE.js"></script>
+<![endif]-->
+<link type="text/css" href="/pubs/techbull/styles/print.css" rel="stylesheet" media="print"/>
+    <title>ChemIDplus and the Drug Information Portal Content Available From PubChem Only Starting December 2022. NLM Technical Bulletin. 2022 Jul&#8211;Aug</title>
+  <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" title="The Dublin Core metadata Element Set" />
+  <meta name="DC.Title" content="ChemIDplus and the Drug Information Portal Content Available From PubChem Only Starting December 2022" />
+
+  <meta name="DC.Publisher" content="U.S. National Library of Medicine" />
+  <meta name="DC.Date.Issued" content="2022-08-16" />
+  <meta name="DC.Date.Modified" content="2022-12-16" />
+  <meta name="NLMDC.Date.LastReviewed" content="2022-12-16" />
+  <meta name="NLM.Contact.Email" content="nlmtechbull@mail.nlm.nih.gov" />
+  <meta name="DC.Type" content="Newsletters" />
+  <meta name="NLM.Permanence.Level" content="Permanent: Stable Content" />
+  <meta name="DC.Rights" content="Public Domain" />
+  <meta name="DC.Language" content="eng" />
+
+
+<meta name="DC.Subject.Keyword" content="PubChem" />   
+<meta name="DC.Subject.Keyword" content="ChemIDplus" />   
+<meta name="DC.Subject.Keyword" content="Drug Information Portal" />   
+  
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-MT6MLL');</script>
+<!-- End Google Tag Manager -->
+</head>
+<body>
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-MT6MLL" height="0" width="0" style="display:none;visibility:hidden" title="googletagmanager"></iframe></noscript>
+<!-- End Google Tag Manager -->
+<div class="skipnavigation"><a title="Skip the navigation on this page" href="#skipnav" class="skipnavigation">Skip Navigation Bar</a></div>
+
+<div>
+
+  <div class="header">
+  <img src="/pubs/techbull/images/tb_logo_113.jpg" alt="National Library of Medicine Technical Bulletin" title="National Library of Medicine Technical Bulletin" /><img src="/pubs/techbull/images/nlm_masthead_113.jpg" alt="National Library of Medicine Technical Bulletin" title="National Library of Medicine Technical Bulletin" usemap="#nlm_masthead_113" />
+  </div>
+
+<div class="search_box">
+<form method="get" action="//vsearch.nlm.nih.gov/vivisimo/cgi-bin/query-meta" target="_self" name="searchForm" class="searchForm">
+<label class="displaynone" for="search">Search</label>
+<input name="query" id="search" type="text" class="search-input inactive" size="50" onfocus="this.value=''" value="Search here for NLM Technical Bulletin articles"   aria-label="Search NLM Technical Bulletin">
+<input type="hidden" name="v:project" value="technical-bulletin">
+</form>
+</div>
+
+</div>
+
+ <div id="nav">
+ <!--Open drop-->
+<ul class="topnav">
+<li class="currentissue"><a href="//www.nlm.nih.gov/pubs/techbull/current_issue.html">Current Issue</a> <img class="separator" src="/pubs/techbull/images/whitelinetransparentbackground.gif " alt=""/></li>
+<li class="archive"><a href="//www.nlm.nih.gov/pubs/techbull/back_issues.html">Previous Issues</a> <img class="separator" src="/pubs/techbull/images/whitelinetransparentbackground.gif " alt=""/></li>
+<li class="about"><a href="//www.nlm.nih.gov/pubs/techbull/about.html">About</a> <img class="separator" src="/pubs/techbull/images/whitelinetransparentbackground.gif " alt=""/></li>
+<li class="staycurrent"><a href="//www.nlm.nih.gov/pubs/techbull/stay_current.html">Stay Current <img class="emaillogo" src="/pubs/techbull/images/email_20px.gif" alt="E-Mail Sign Up" style="margin-top: -4px;"/> <img class="rsslogo" src="/pubs/techbull/images/rss_20px.gif" alt="RSS Feed" style="margin-top: -4px;"/></a></li>
+</ul>
+<!--Close drop-->
+	</div>
+<div class="body">
+<a id="skipnav" name="skipnav"></a>
+<div class="syndicate">
+<p class="tableOfContents"><strong>Table of Contents: <a href="/pubs/techbull/ja22/ja22_issue_cover.html">2022 JULY&#8211;AUGUST No. 447</a></strong></p>
+<p class="prevnext"><span class="buttons">
+<span class="previous"><a href="ja22_pubmed_journals_search.html">Previous</a></span> <span class="next"><a href="ja22_uts_new_feature.html">Next</a></span>
+
+</span></p>
+<hr class="hr1"  />
+<h1 class="articleH1">ChemIDplus and the Drug Information Portal Content Available From PubChem Only Starting December 2022</h1>
+<p class="tbyearmonth">ChemIDplus and the Drug Information Portal Content Available From PubChem Only Starting December 2022. NLM Tech Bull. 2022 Jul-Aug;(447):e2.</p>
+<div class="articleactions">2022 August  16  <span class="status">[posted]</span>
+
+
+	<br />
+2022 November 28
+
+	
+	 <span class="status">
+	 [<a href="#note">Editor's note added</a>]
+	 </span>
+	
+
+	<br />
+2022 December 12
+
+	
+	 <span class="status">
+	 [<a href="#note">Editor's note added</a>]
+	 </span>
+	
+
+	<br />
+2022 December 16
+
+	
+	 <span class="status">
+	 [<a href="#note">Editor's note added</a>]
+	 </span>
+	
+
+
+</div>
+<div class="articleParagraph">
+ 
+<p class="editorsnote"><a name="note"></a><em>[Editor's note: The retirement date of ChemIDplus and Drug Information Portal was added.]</em></p>
+<p class="editorsnote"><a name="note"></a><em>[Editor's note: Read <a href="https://www.nlm.nih.gov/pubs/techbull/nd22/nd22_drug_and_chemical_resources.html">"A Quick Reference to NLM's Drug and Chemical Resources"</a>.]</em></p>
+<p class="editorsnote"><a name="note"></a><em>[Editor's note: Updates about the ChemID dataset was added to the end of the article.]</em></p>
+
+<p>On December 12, 2022, <a href="https://pubchem.ncbi.nlm.nih.gov/">PubChem</a> will serve as NLM's single source for chemical information. NLM is retiring ChemIDplus and the Drug Information Portal, two chemical property information sites, to better focus our development efforts on a single, integrated source of chemical information. All of the data found in ChemIDplus and the Drug Information Portal is currently available and will continue to be available in <a href="https://pubchem.ncbi.nlm.nih.gov/">PubChem</a>.</p>
+<p><a href="https://pubchem.ncbi.nlm.nih.gov/">PubChem</a> is the world's largest collection of freely accessible chemical information. A quick guide to finding ChemIDplus data on PubChem can be found at <a href="https://www.nlm.nih.gov/toxnet/Accessing_ChemIDplus_Content_from_PubChem.html">Accessing ChemIDplus Content from PubChem</a>. In addition, <a href="https://pubchemdocs.ncbi.nlm.nih.gov/about">About PubChem</a> provides a wealth of information about using PubChem, including sections on:</p>
+<ol>
+<li>PubChem <a href="https://pubchemdocs.ncbi.nlm.nih.gov/news">News</a>, which provides updates about PubChem.</li>
+<li><a href="https://pubchemdocs.ncbi.nlm.nih.gov/what-s-in-pubchem">What's in PubChem</a>, which explains the different components of PubChem and the content included in the site.</li>
+<li>PubChem <a href="https://pubchemdocs.ncbi.nlm.nih.gov/search-and-tools">Search and Tools</a>, which includes information on advanced search features and chemical structure searching.</li>
+<li><a href="https://pubchemdocs.ncbi.nlm.nih.gov/programmatic-access">Programmatic Access,</a> which provides information on programmatical access of PubChem data, including the <a href="https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest">REST</a> and <a href="https://pubchemdocs.ncbi.nlm.nih.gov/pug-soap">SOAP</a> API features.</li>
+</ol>
+<p>A new self-paced PubChem tutorial (<a href="https://www.nlm.nih.gov/oet/ed/pubchem/tutorial/">https://www.nlm.nih.gov/oet/ed/pubchem/tutorial/</a>) is also available to guide users through the steps to access chemical property and structure data that hundreds of academic, government, and industrial sources contribute to PubChem. It includes step-by-step directions for how to find chemical information using chemical names, identifiers, molecular formulas, gene symbols, proteins, pathways, taxonomies, and structures.</p>
+<p>New content will continue to be added to ChemIDplus and the Drug Information Portal until November 1, 2022. Both ChemIDplus and the Drug Information Portal will remain available until they are retired in mid-December 2022. The ChemIDplus data (which includes all of the data in the Drug Information Portal) is also available as a bulk download file through the <a href="https://www.nlm.nih.gov/databases/download/data_distrib_main.html">NLM Data Distribution Program</a> and will continue to be available after both sites are retired.</p>
+<p>After the ChemIDplus site is retired, NLM staff will perform a final review of the data. The final ChemID dataset will be used to update PubChem and will be posted on the <a href="https://www.nlm.nih.gov/databases/download/chemidplus.html">NLM Data Distribution site</a>. Also, the older versions of the ChemID files will be removed from Data Distribution. These updates will happen by February 28, 2023.</p>
+<p>If you have any questions, please contact the <a href="https://support.nlm.nih.gov/">NLM Support Center</a>.</p>
+</div>
+<p class="articleParagraph">
+
+
+
+
+</p>
+</div>
+<div class="footer">
+<p class="footerLeft"><span class="footerissn"><strong>ISSN 2161-2986 (Online)</strong> Content not copyrighted; freely reproducible.</span><br/>
+<a href="/">National Library of Medicine</a> 8600 Rockville Pike, Bethesda, MD 20894
+<br/>
+<a href="//www.nlm.nih.gov/socialmedia/index.html">Connect with NLM</a>,
+<a href="//www.nlm.nih.gov/web_policies.html">Web Policies</a>, 
+<a href="//www.nlm.nih.gov/careers/jobopenings.html">Careers</a>, 
+<a href="//www.nlm.nih.gov/accessibility.html">Accessibility</a>, 
+<a href="//www.usa.gov/" id="anch_34">USA.gov</a>, 
+<a href="//www.hhs.gov/vulnerability-disclosure-policy/index.html">HHS Vulnerability Disclosure</a> 
+<br/>
+
+<a href="//www.nih.gov/">NIH</a>, 
+<a href="https://www.hhs.gov/">HHS</a>, 
+<a href="//www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office">FOIA</a>, 
+<a class="supportLink" href="//support.nlm.nih.gov?from=" target="_blank">NLM Support Center</a>
+
+  </p>
+
+<p class="footerRight">
+<strong>Last updated:</strong> 16 December 2022</p>
+</div>
+</div>
+<map id="nlm_masthead_113" name="nlm_masthead_113">
+<area shape="rect" alt="NLM Technical Bulletin" coords="1,15,396,45" href="//www.nlm.nih.gov/pubs/techbull/tb.html" title="NLM Technical Bulletin" />
+<area shape="rect" alt="National Library of Medicine" coords="0,47,203,62" href="//www.nlm.nih.gov/" title="National Library of Medicine" />
+<area shape="rect" coords="207,47,396,62" href="//www.nih.gov/" alt="National Institutes of Health" title="" />
+</map>
+<!--*****************************Content end*******************************-->
+<script src="/scripts/support.js"></script>
+<script src="/core/nlm-notifyExternal/1.0/nlm-notifyExternal.min.js"></script> 
+</body>
+</html>
+ 

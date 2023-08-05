@@ -14,7 +14,7 @@ import numpy as np
 update_fn = 'c:/MyDocs/OpenFF/data/transformed/upload_dates.csv'
 
 #!!!  Don't forget to change the repo and date in catalog_common!
-today_str = '2022-07-30' # used as file name when finalizing and uploading
+today_str = '2023-07-26' # used as file name when finalizing and uploading
 make_final = True
 today = datetime.date.today()
 
@@ -29,16 +29,16 @@ def add_favicon(fn):
         f.write(alltext)
 
 
-s= "jupyter nbconvert --no-input --ExecutePreprocessor.allow_errors=True --ExecutePreprocessor.timeout=-1 --execute new_data_summary.ipynb --to=html "
+s= "jupyter nbconvert --no-input --ExecutePreprocessor.allow_errors=True --ExecutePreprocessor.timeout=-1 --execute summary_of_recent_disclosures.ipynb --to=html "
 print(subprocess.run(s,capture_output=False))
-add_favicon(fn='new_data_summary.html')
+add_favicon(fn='summary_of_recent_disclosures.html')
 
 if make_final:
     print(f'Ready to make a final upload using <{today_str}> as file name.')
     c = input('ARE YOU SURE YOU WANT TO GENERATE A WEEKLY FINAL UPLOAD? [y/N] > ')
     if c == 'y':
         print('copying result to Google Drive webshare')
-        shutil.copyfile('new_data_summary.html',
+        shutil.copyfile('summary_of_recent_disclosures.html',
                         f'g:/My Drive/webshare/weekly_reports/{today_str}.html')
     
         print('updating date file')    

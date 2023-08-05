@@ -8,44 +8,78 @@ sys.argv:
 1 = header title - no spaces! use '_' to indicate spaces
 """
 import datetime
+import time
 import sys
+import os
 from IPython.display import Markdown as md
-from IPython.core.display import display, HTML
-#import geopandas as gpd
+# from IPython.core.display import display, HTML
+from IPython.display import display, HTML
+
+# itables allow interactive tables but also require downloading html to view
+use_itables = True
+
+if use_itables:
+    from itables import init_notebook_mode
+    init_notebook_mode(all_interactive=True)
+    from itables import show as iShow
+    import itables.options as opt
+    opt.classes="display compact cell-border"
+    opt.maxBytes = 0
+    
+else:
+    def iShow(df,maxBytes=0,classes=None):
+        display(df)
 
 
 import warnings
 warnings.filterwarnings('ignore')
 
 
-#repo_name = 'v14_2022_04_06'
-#repo_name = 'v15_2022_07_30'
-repo_name = 'v15_beta_2022_08_14'
-bulkdata_date = 'July 30, 2022'
+repo_name = 'cloud_repo_2023_07_26'
+#repo_name = 'SkyTruth_2022_09_11'
+data_source = 'bulk'  # can be 'bulk', 'FFV1_scrape' or 'SkyTruth'
+                                    # or 'NM_scrape_2022_05'
+
+bulkdata_date = 'July 26, 2023'
 cat_creation_date = datetime.datetime.now()
 extData_loc = 'c:/MyDocs/OpenFF/data/external_refs/'
 transformed_loc = 'c:/MyDocs/OpenFF/data/transformed/'
+pic_dir = r"C:\MyDocs\OpenFF\src\openFF-catalog\pic_dir"
 
-
+def data_banner():
+    # used to alert user when catalog in NOT of official bulk resource
+    if data_source=='bulk':
+        return  ''
+    else:
+        s = f""" <center><H2>ATTENTION:<br>
+        This catalog page is not based on the official FracFocus download<br>
+        but an alternative data set:</H2><H1>** {data_source} **</H1>
+        Please be aware of the caveats for these data. <br>
+        Some sections of the catalog may not be appropriate.</center><br><br><hr>
+        """
+        display(HTML(s))
+        
 def ID_header(title = '',line2 ='', subtitle = '',imagelink='',
-              incl_links=True,link_up_level=False):
-#     if len(sys.argv)<2:
-#         title = ''
-#     else:
-#         title = sys.argv[1].replace('_',' ')
+              incl_links=True,link_up_level=False,
+              show_source=True):
+
+    data_banner()
     local_prefix = ''
     if link_up_level:
         local_prefix= '../'
         
-    logo = """<img src="https://storage.googleapis.com/open-ff-common/openFF_logo.png" alt="openFF logo" width="100" height="100">"""
-    source = f"""This file generated on {cat_creation_date:%B %d, %Y} from data repository: {repo_name}."""
+    logo = """<a href="https://frackingchemicaldisclosure.wordpress.com/" title="Open-FF home page, tour and blog"><img src="https://storage.googleapis.com/open-ff-common/openFF_logo.png" alt="openFF logo" width="100" height="100"></a>"""
+    if show_source:
+        source = f"""This file generated on {cat_creation_date:%B %d, %Y} from data repository: {repo_name}."""
+    else:
+        source = ''
     cat_links = f"""<td width=20%>
                     <p style="text-align: center; font-size:120%"> 
                       <a href="{local_prefix}Open-FF_Catalog.html" title="Local Navigator"> Navigator Page </a><br>
                       <a href="{local_prefix}Open-FF_Chemicals.html" title="OpenFF Chemical index"> Chemical Index </a><br>
                       <a href="{local_prefix}Open-FF_Synonyms.html" title="OpenFF Synonyms index"> Synonym Index </a><br>
-                      <a href="{local_prefix}Open-FF_Companies.html" title="OpenFF Company names translation table"> Company Translation table </a><br>
-                      <a href="https://codeocean.com/capsule/9423121/tree" title="Source code and reference data sets"> CodeOcean Project </a><br>
+                      <a href="{local_prefix}Open-FF_Operator_Index.html" title="OpenFF Operator index"> Operator Index </a><br>
+                      <a href="https://frackingchemicaldisclosure.wordpress.com/" title="Open-FF home page, tour and blog"> Open-FF Home </a><br>
                     </p>
                     </td>
                 """
@@ -76,10 +110,73 @@ def ID_header(title = '',line2 ='', subtitle = '',imagelink='',
             </table>"""
     display(HTML(table))
 
+def displaySource():
+    source = f"""This file generated on {cat_creation_date:%B %d, %Y} from data repository: {repo_name}."""
+    display(HTML(source))
+
+def setup_collapsibles():
+    display(HTML("""<style>
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 80%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+</style>
+
+"""))
+    
+def addCollapJS():
+    display(HTML("""<script>
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+</script>"""))
+    
+    
+def insert_collapsible(displayed='Read More...', content='stuff'):
+    display(HTML(f"""<button type="button" class="collapsible">{displayed}</button>
+<div class="content">
+  <p>{content}</p>
+</div>
+"""))
+    addCollapJS()
+
+# def show_mod_footer(filepath,repo=repo_name):
+#     display(md(f"""The code for this webpage was last revised **{time.ctime(os.path.getmtime(filepath))}** and the data were compiled from the **{repo}** repository."""))
+    
 ###############################  Used to make repository accessible ####################
 #import sys
 sys.path.insert(0,'c:/MyDocs/OpenFF/src/')
 import common.code.Analysis_set_remote as ana_set
+import common.code.Analysis_set_remote_old as ana_set_old # to fetch older repos
 import common.code.get_repo_data as grd
 import common.code.get_google_map as ggmap
 
@@ -100,7 +197,7 @@ sleep(0.1)
 
 ##################### functions for creating links and making displays a little nicer
 from math import log10, floor
-def round_sig(x, sig=2):
+def round_sig(x, sig=2,guarantee_str=''):
     try:
         if abs(x)>=1:
             out =  int(round(x, sig-int(floor(log10(abs(x))))-1))
@@ -108,6 +205,8 @@ def round_sig(x, sig=2):
         else: # fractional numbers
             return str(round(x, sig-int(floor(log10(abs(x))))-1))
     except:
+        if guarantee_str:
+            return guarantee_str
         return x
     
 # used to insert links of google maps into tables
@@ -119,55 +218,105 @@ def make_clickable(val):
         return val
     return val
 
-def getLink(row):
-    return ggmap.getSearchLink(row.bgLatitude,row.bgLongitude)
+def getLink(row,latname='bgLatitude',lonname='bgLongitude'):
+    return ggmap.getSearchLink(row[latname],row[lonname])
+#    return ggmap.getSearchLink(row.bgLatitude,row.bgLongitude)
 
 def getCatLink(cas,text_to_show='Analysis',use_remote=False):
     preamble = ''
     if use_remote:
-        preamble = 'https://qbobioyuz1dh57rst8exeg-on.drv.tw/open_FF_catalog/'
+        preamble = 'https://storage.googleapis.com/open-ff-browser/'
     s = f'{preamble}{cas}/analysis_{cas}.html'
+    return ggmap.wrap_URL_in_html(s,text_to_show)
+
+def getOpLink(opname,text_to_show='Operator details',use_remote=False,up_level=False):
+    preamble = ''
+    if use_remote:
+        preamble = 'https://storage.googleapis.com/open-ff-browser/'
+    if up_level:
+        preamble = '../'
+    s = f'{preamble}operators/{opname}.html'
     return ggmap.wrap_URL_in_html(s,text_to_show)
 
 def getStateLink(state,text_to_show='State details',use_remote=False):
     preamble = 'states'
     if use_remote:
-        preamble = 'https://qbobioyuz1dh57rst8exeg-on.drv.tw/open_FF_catalog/states/'
+        preamble = 'https://storage.googleapis.com/open-ff-browser/states/'
     s = f'{preamble}/{state.lower()}.html'
     return ggmap.wrap_URL_in_html(s,text_to_show)
 
 def getCountyLink(county,state,text_to_show='County details',use_remote=False):
     preamble = '.' # when coming from a state link, don't need preamble
     if use_remote:
-        preamble = 'https://qbobioyuz1dh57rst8exeg-on.drv.tw/open_FF_catalog/states/'
+        preamble = 'https://storage.googleapis.com/open-ff-browser/states/'
     name = county.lower().replace(' ','_') + '-' + state.lower().replace(' ','_')
     s = f'{preamble}/{name}.csv'
     return ggmap.wrap_URL_in_html(s,text_to_show)
 
 def getDataLink(cas):
     s = f'{cas}/data.zip'
-    return ggmap.wrap_URL_in_html(s,'zipped data file')
+    return ggmap.wrap_URL_in_html(s,'data; ')
 
-def getChemIDLink(cas):
+def wrapLink(url,txt):
+    # simple wrapping to make a link displayable in notebook
+    return ggmap.wrap_URL_in_html(url,txt)
+
+#  CHEMID is no longer running
+# def getChemIDLink(cas):
+#     try:
+#         if cas[0] in ['0','1','2','3','4','5','6','7','8','9']:
+#             s = f'https://chem.nlm.nih.gov/chemidplus/rn/{cas}'
+#             return ggmap.wrap_URL_in_html(s,'ChemID; ')
+#     except:
+#         pass
+#     return ''
+
+# def getChemIDImg(cas):
+# #    return f"""<center><img src="https://chem.nlm.nih.gov/chemidplus/structure/{cas}" width="120" alt="no image available from ChemID"/></center>"""
+#     return f"""<center><img src="https://chem.nlm.nih.gov/chemidplus/structure/{cas}" onerror="this.onerror=null; this.remove();" alt="" width="120"></center>"""
+
+def getPubChemLink(cas):
     try:
-        if cas[0] in ['0','1','2','3','4','5','6','7','8','9']:
-            s = f'https://chem.nlm.nih.gov/chemidplus/rn/{cas}'
-            return ggmap.wrap_URL_in_html(s,'ChemID')
+        if cas[0].isnumeric():
+            s = f'https://pubchem.ncbi.nlm.nih.gov/#query={cas}'
+            return ggmap.wrap_URL_in_html(s,'PubChem; ')
     except:
         pass
     return ''
 
-def getChemIDImg(cas):
-#    return f"""<center><img src="https://chem.nlm.nih.gov/chemidplus/structure/{cas}" width="120" alt="no image available from ChemID"/></center>"""
-    return f"""<center><img src="https://chem.nlm.nih.gov/chemidplus/structure/{cas}" onerror="this.onerror=null; this.remove();" alt="" width="120"></center>"""
+def getMoleculeImg(cas,size=120,chemical_report=False):
+    prefix = ''
+    if chemical_report: prefix='../'
+    ct_path = os.path.join(pic_dir,cas,'comptoxid.png')
+    # take comptox version if it exists
+    if os.path.exists(ct_path):
+        # and is not empty:  # this is the normal return
+        if os.path.getsize(ct_path) > 0:
+            return f"""<center><img src="{prefix}images/{cas}/comptoxid.png" onerror="this.onerror=null; this.remove();" width="{size}"></center>"""
+    else: # but if all else fails, try linking ot chemid
+        ci_path = os.path.join(pic_dir,cas,'chemid.png')
+        if os.path.exists(ci_path):
+            if os.path.getsize(ci_path) > 0:
+                return f"""<center><img src="{prefix}images/{cas}/chemid.png" onerror="this.onerror=null; this.remove();" width="{size}"></center>"""
+    return "<center>Image not available</center>"
 
+            
+def getMoleculeImgBig(cas):
+    return f"""<center><img src="../images/{cas}/comptoxid.png" onerror="this.onerror=null; this.remove();" width="300"></center>"""
 
+def getFingerprintImg(cas):
+    fp_path = os.path.join(pic_dir,cas,'haz_fingerprint.png')
+    # take comptox version if it exists
+    if os.path.exists(fp_path):
+        return f"""<center><img src="images/{cas}/haz_fingerprint.png" onerror="this.onerror=null; this.remove();" width="200"></center>"""
+    return "<center>ChemInformatics not available</center>"
+    
 def getCompToxRef(DTXSID):
     #return DTXSID   
     try:
         if DTXSID[:3] == 'DTX':
             s = f'https://comptox.epa.gov/dashboard/dsstoxdb/results?search={DTXSID}'
-            return ggmap.wrap_URL_in_html(s,'EPA: CompTox')
+            return ggmap.wrap_URL_in_html(s,'CompTox')
     except:
         pass
     return ""
@@ -208,11 +357,41 @@ def xlate_to_str(inp,sep='; ',trunc=False,tlen=20,totallen = 5000,sort=True,
         out = out[:totallen]+' ...' 
     return out
 
+##########  getting some basic lists from the repository
+
+def get_cas_list():
+    """returns list of all bgCAS numbers in current repository"""
+    repoloc = r"C:\MyDocs\OpenFF\data\repos/"+repo_name
+    pkl = pd.read_parquet(os.path.join(repoloc,'pickles/bgCAS.parquet'))
+    #pkl.to_csv('./tmp/bgCAS.csv')
+    lst = pkl.bgCAS.str.strip().unique().tolist()
+    for cas in lst:
+        if (cas[-1]==' ')|(cas[0]==' '):
+            print(f'CAS list error: <<{cas}>>')
+    return lst
+
+
+def get_comptox_df():
+    """returns df of bgCAS with DTXSID ids as well as bgCAS"""
+    repoloc = r"C:\MyDocs\OpenFF\data\repos/"+repo_name
+    pkl = pd.read_parquet(os.path.join(repoloc,'pickles/bgCAS.parquet'))
+    #print(f'Len dtxsid: {pkl.DTXSID.notna().sum()}, {len(pkl)}')
+    #print(f'{pkl[["bgCAS","DTXSID"]].head(10)}')
+    print('CAS without DTXSID:')
+    print(pkl[pkl.DTXSID.isna()].bgCAS.tolist())
+    return pkl[pkl.DTXSID.notna()][['bgCAS','DTXSID']]
+
+    
+ 
+    
+
 #############################  making folium maps #############################
 import pandas as pd
 import numpy as np
 import geopandas as gpd
 import folium
+from folium import plugins
+final_crs = 4326 # WGS84
 
 def get_state_center(state):
     t = pd.read_csv(r"C:\MyDocs\OpenFF\src\openFF-catalog\work\state_coords.csv",
@@ -220,6 +399,25 @@ def get_state_center(state):
     t = t[t.state==state]
     #print(t)
     return [t.Latitude.mean(),t.Longitude.mean()*-1]
+
+def get_geog_center(state_list):
+    t = pd.read_csv(r"C:\MyDocs\OpenFF\src\openFF-catalog\work\state_coords.csv",
+                   dtype={'Latitude':'float', 'Longitude':'float'})
+    t = t[t.state.isin(state_list)]
+    #print(t)
+    return [t.Latitude.mean(),t.Longitude.mean()*-1]
+
+def get_zoom_level(df):
+    latdiff = df.bgLatitude.max() - df.bgLatitude.min()
+    londiff = df.bgLongitude.max()- df.bgLongitude.min()
+    #print(f'latdiff = {latdiff}, londiff = {londiff}')
+    diffsum = latdiff+londiff
+    if diffsum <1 : return 6
+    if diffsum <5 : return 5
+    if diffsum <20 : return 4
+    if diffsum <28 : return 3.5
+    return 3
+    
 
 def fix_county_names(df):
     trans = {'mckenzie':'mc kenzie',
@@ -232,13 +430,75 @@ def fix_county_names(df):
         df.CountyName = np.where(df.CountyName==wrong,trans[wrong],df.CountyName)
     return df
 
+def create_point_map(data,include_mini_map=False,
+                     fields=['APINumber','TotalBaseWaterVolume','year','OperatorName','ingKeyPresent'],
+                     aliases=['API Number','Water Volume','year','Operator','has chem recs'],
+                     width=600,height=400):
+    
+    f = folium.Figure(width=width, height=height)
+    m = folium.Map(tiles="openstreetmap").add_to(f)
+    locations = list(zip(data.bgLatitude, data.bgLongitude))
+    cluster = plugins.MarkerCluster(locations=locations,
+                                   name='cluster markers')#,                     
+                   # popups=airbnb_data["neighbourhood"].tolist())  
+    m.add_child(cluster)
+    
+    sw = data[['bgLatitude', 'bgLongitude']].min().values.tolist()
+    ne = data[['bgLatitude', 'bgLongitude']].max().values.tolist()
+    m.fit_bounds([sw, ne]) 
+
+    gdf = gpd.GeoDataFrame(data, geometry=gpd.points_from_xy(data.bgLongitude,
+                                                            data.bgLatitude),
+                           crs=final_crs)
+    folium.features.GeoJson(
+            data=gdf,
+            name='information marker',
+            show=False,
+            smooth_factor=2,
+            style_function=lambda x: {'color':'black','fillColor':'transparent','weight':0.5},
+            popup=folium.features.GeoJsonPopup(
+                fields=fields,
+                aliases=aliases, 
+                localize=True,
+                sticky=False,
+                labels=True,
+                style="""
+                    background-color: #F0EFEF;
+                    border: 2px solid black;
+                    border-radius: 3px;
+                    box-shadow: 3px;
+                """,
+                max_width=800,),
+                    highlight_function=lambda x: {'weight':3,'fillColor':'grey'},
+                ).add_to(m)   
+    
+    # Add a tile layer with satellite imagery
+    folium.TileLayer(
+        tiles='https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+        attr='Google',
+        name='Google Satellite',
+        overlay=False,
+        control=True,
+        subdomains=['mt0', 'mt1', 'mt2', 'mt3']
+    ).add_to(m)
+
+    # Add layer control to switch between base maps
+    folium.LayerControl().add_to(m)
+
+    if include_mini_map:
+        minimap = plugins.MiniMap()
+        m.add_child(minimap)
+
+    display(f)
+
 # single layer, with popups
 def create_state_choropleth(data,
                             start_loc=[40, -96],start_zoom = 4,
                             custom_scale = [], plotlog = True,
                             legend_name = 'Test legend',
                             fields = ['StateName','orig_value'],
-                            aliases = ['State: ','data: ']):
+                            aliases = ['State: ','data: '],
+                            width=600,height=400):
     fn = r"C:\MyDocs\OpenFF\data\non-FF\georef-united-states-of-america-state.geojson"
     geojson = gpd.read_file(fn)
     data['orig_value'] = data.value
@@ -246,7 +506,7 @@ def create_state_choropleth(data,
     geojson['StateName'] = geojson.ste_name.str.lower()
     geojson = geojson[['StateName','ste_code','geometry']]
     #     geojson.drop(['ste_name'],axis=1,inplace=True)
-    f = folium.Figure(width=600, height=400)
+    f = folium.Figure(width=width, height=height)
     m = folium.Map(location= start_loc, tiles="openstreetmap",
                     zoom_start=start_zoom).add_to(f)
 #     fg1 = folium.FeatureGroup(name=legend_name,overlay=False).add_to(m)
@@ -387,5 +647,12 @@ def create_county_choropleth(data,
                     max_width=800,),
                         highlight_function=lambda x: {'weight':3,'fillColor':'grey'},
                     ).add_to(m)   
+# fit_bounds needs work: https://stackoverflow.com/questions/58162200/pre-determine-optimal-level-of-zoom-in-folium
+#     sw = data[['bgLatitude', 'bgLongitude']].min().values.tolist()
+#     ne = data[['bgLatitude', 'bgLongitude']].max().values.tolist()
 
+#     m.fit_bounds([sw, ne]) 
     display(f)
+
+if __name__ == '__main__':
+    df = get_cas_list()
