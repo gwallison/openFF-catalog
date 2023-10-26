@@ -14,7 +14,7 @@ import numpy as np
 update_fn = 'c:/MyDocs/OpenFF/data/transformed/upload_dates.csv'
 
 #!!!  Don't forget to change the repo and date in catalog_common!
-today_str = '2023-07-26' # used as file name when finalizing and uploading
+today_str = '2023-10-21' # used as file name when finalizing and uploading
 make_final = True
 today = datetime.date.today()
 
@@ -40,6 +40,7 @@ if make_final:
         print('copying result to Google Drive webshare')
         shutil.copyfile('summary_of_recent_disclosures.html',
                         f'g:/My Drive/webshare/weekly_reports/{today_str}.html')
+        
     
         print('updating date file')    
         updates = pd.read_csv(update_fn)

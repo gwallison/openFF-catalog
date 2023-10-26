@@ -35,12 +35,12 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-repo_name = 'cloud_repo_2023_07_26'
+repo_name = 'current_repo'
 #repo_name = 'SkyTruth_2022_09_11'
 data_source = 'bulk'  # can be 'bulk', 'FFV1_scrape' or 'SkyTruth'
                                     # or 'NM_scrape_2022_05'
 
-bulkdata_date = 'July 26, 2023'
+bulkdata_date = 'October 21, 2023'
 cat_creation_date = datetime.datetime.now()
 extData_loc = 'c:/MyDocs/OpenFF/data/external_refs/'
 transformed_loc = 'c:/MyDocs/OpenFF/data/transformed/'
@@ -69,19 +69,28 @@ def ID_header(title = '',line2 ='', subtitle = '',imagelink='',
         local_prefix= '../'
         
     logo = """<a href="https://frackingchemicaldisclosure.wordpress.com/" title="Open-FF home page, tour and blog"><img src="https://storage.googleapis.com/open-ff-common/openFF_logo.png" alt="openFF logo" width="100" height="100"></a>"""
+    logoFT = """<center><a href="https://www.fractracker.org/" title="FracTracker Alliance"><img src="https://storage.googleapis.com/open-ff-common/2021_FT_logo_icon.png" alt="FracTracker logo" width="100" height="100"><br>Sponsored by FracTracker Alliance</a></center>"""
+
     if show_source:
         source = f"""This file generated on {cat_creation_date:%B %d, %Y} from data repository: {repo_name}."""
     else:
         source = ''
-    cat_links = f"""<td width=20%>
-                    <p style="text-align: center; font-size:120%"> 
-                      <a href="{local_prefix}Open-FF_Catalog.html" title="Local Navigator"> Navigator Page </a><br>
-                      <a href="{local_prefix}Open-FF_Chemicals.html" title="OpenFF Chemical index"> Chemical Index </a><br>
-                      <a href="{local_prefix}Open-FF_Synonyms.html" title="OpenFF Synonyms index"> Synonym Index </a><br>
-                      <a href="{local_prefix}Open-FF_Operator_Index.html" title="OpenFF Operator index"> Operator Index </a><br>
-                      <a href="https://frackingchemicaldisclosure.wordpress.com/" title="Open-FF home page, tour and blog"> Open-FF Home </a><br>
+    # cat_links = f"""<td width=20%>
+    #                 <p style="text-align: center; font-size:120%"> 
+    #                   <a href="{local_prefix}Open-FF_Catalog.html" title="Local Navigator"> Navigator Page </a>|
+    #                   <a href="{local_prefix}Open-FF_Chemicals.html" title="OpenFF Chemical index"> Chemical Index </a>|
+    #                   <a href="{local_prefix}Open-FF_States_and_Counties.html" title="OpenFF States index"> State Index </a>|
+    #                   <a href="{local_prefix}Open-FF_Operator_Index.html" title="OpenFF Operator index"> Operator Index </a>
+    #                   <a href="https://frackingchemicaldisclosure.wordpress.com/" title="Open-FF home page, tour and blog"> Open-FF Home </a><br>
+    #                 </p>
+    #                 </td>
+    #             """
+    cat_links = f"""<p style="text-align: center; font-size:100%"> Links: 
+                      <a href="{local_prefix}Open-FF_Catalog.html" title="Local Navigator"> Navigator Page </a>|
+                      <a href="{local_prefix}Open-FF_Chemicals.html" title="OpenFF Chemical index"> Chemical Index </a>|
+                      <a href="{local_prefix}Open-FF_States_and_Counties.html" title="OpenFF States index"> State Index </a>|
+                      <a href="{local_prefix}Open-FF_Operator_Index.html" title="OpenFF Operator index"> Operator Index </a>
                     </p>
-                    </td>
                 """
     #                       <a href="https://frackingchemicaldisclosure.wordpress.com/"> Blog </a><br>
     #                <p style="text-align: left; font-size:120%"> Links: </p>
@@ -99,15 +108,16 @@ def ID_header(title = '',line2 ='', subtitle = '',imagelink='',
         image_alt = f'<center>{imagelink}</center>'
         
     table = f"""<style>
-                </style>
+                </style>{cat_txt}<hr>
                 <table style='margin: 0 auto' >
                 <tr>
-                <td width=10%>{logo}</td>
+                <td width=15%>{logo}</td>
                 <td><p style="text-align: center; font-size:300%">{title}</p><br> {line2_alt} {subtitle_alt} {image_alt}
                     <p style="text-align: center; font-size:100%">{source}
                 </td>
-                {cat_txt}
-            </table>"""
+                <td width=15%>{logoFT}</td>
+                </tr>
+            </table><hr>"""
     display(HTML(table))
 
 def displaySource():
@@ -250,7 +260,8 @@ def getCountyLink(county,state,text_to_show='County details',use_remote=False):
     if use_remote:
         preamble = 'https://storage.googleapis.com/open-ff-browser/states/'
     name = county.lower().replace(' ','_') + '-' + state.lower().replace(' ','_')
-    s = f'{preamble}/{name}.csv'
+    # s = f'{preamble}/{name}.csv'
+    s = f'{preamble}/{name}.html'
     return ggmap.wrap_URL_in_html(s,text_to_show)
 
 def getDataLink(cas):
@@ -357,6 +368,7 @@ def xlate_to_str(inp,sep='; ',trunc=False,tlen=20,totallen = 5000,sort=True,
         out = out[:totallen]+' ...' 
     return out
 
+
 ##########  getting some basic lists from the repository
 
 def get_cas_list():
@@ -430,17 +442,32 @@ def fix_county_names(df):
         df.CountyName = np.where(df.CountyName==wrong,trans[wrong],df.CountyName)
     return df
 
-def create_point_map(data,include_mini_map=False,
+def create_point_map(data,include_mini_map=False,include_shape=False,area_df=None,
                      fields=['APINumber','TotalBaseWaterVolume','year','OperatorName','ingKeyPresent'],
                      aliases=['API Number','Water Volume','year','Operator','has chem recs'],
                      width=600,height=400):
+    # only the first item of the area df is used.  Meant to be a simple outline
     
     f = folium.Figure(width=width, height=height)
-    m = folium.Map(tiles="openstreetmap").add_to(f)
+    if include_shape:
+        #print('including shape!')
+        area = [area_df.centroid.geometry.y.iloc[0],area_df.centroid.geometry.x.iloc[0]]
+        m = folium.Map(tiles="openstreetmap",location=area, zoom_start=10).add_to(f)
+        
+        # show area
+        style = {'fillColor': '#00000000', 'color': '#0000FFFF'}
+        folium.GeoJson(area_df,
+                       style_function=lambda x: style,
+                       smooth_factor=.2,
+                       name= 'target area'
+                       ).add_to(m)
+
+
+    else:
+        m = folium.Map(tiles="openstreetmap").add_to(f)
     locations = list(zip(data.bgLatitude, data.bgLongitude))
     cluster = plugins.MarkerCluster(locations=locations,
                                    name='cluster markers')#,                     
-                   # popups=airbnb_data["neighbourhood"].tolist())  
     m.add_child(cluster)
     
     sw = data[['bgLatitude', 'bgLongitude']].min().values.tolist()
@@ -488,8 +515,11 @@ def create_point_map(data,include_mini_map=False,
     if include_mini_map:
         minimap = plugins.MiniMap()
         m.add_child(minimap)
+        
 
     display(f)
+
+
 
 # single layer, with popups
 def create_state_choropleth(data,

@@ -26,12 +26,11 @@ from catalog_common import get_cas_list
 # from IPython.display import display,HTML
 # from IPython.display import Markdown as md
 
-report_dir = r"C:\MyDocs\OpenFF\data\external_refs\ChemInformatics"
+ci_dir = r"C:\MyDocs\OpenFF\src\testing\chemInfo"
+# report_dir = r"C:\MyDocs\OpenFF\data\external_refs\ChemInformatics"
 im_dir = r"C:\MyDocs\OpenFF\src\openFF-catalog\pic_dir"
 
 
-lst = os.listdir(report_dir)
-#print(lst)
 def get_summary_from_xls(fn):
     """This routine throws a warning for each file in the report dir. They are
     harmless and difficult to remove."""
@@ -40,20 +39,38 @@ def get_summary_from_xls(fn):
             'HH: Genotoxicity Mutagenicity','HH: Endocrine Disruption','HH: Reproductive','HH: Developmental',
             'HH: Neurotoxicity: Repeat Exposure','HH: Neurotoxicity: Single Exposure',
             'HH: Systemic Toxicity: Repeat Exposure','HH: Systemic Toxicity: Single Exposure',
-            'HH: Skin Sensitization','HH: Skin Irritation','HH: Eye Irritation','Ecotoxicity: Acute Aquatic Toxicity','Ecotoxicity: Chronic Aquatic Toxicity',
+            'HH: Skin Sensitization','HH: Skin Irritation','HH: Eye Irritation',
+            'Ecotoxicity: Acute Aquatic Toxicity','Ecotoxicity: Chronic Aquatic Toxicity',
             'Fate: Persistence','Fate: Bioaccumulation','Fate: Exposure']
     t.columns = cols
     return t
 
-def get_all():
+# def get_all():
+#     dfs = []
+#     for fn in lst:
+#         filename = os.path.join(report_dir,fn)
+#         dfs.append(get_summary_from_xls(filename))
+#     out = pd.concat(dfs,sort=False)
+#     #print(len(out))
+#     out = out[~out.duplicated(subset='DTXSID')]
+#     #print(len(out))
+#     return out
+
+def get_all_excel(inputdir=ci_dir, single_file = ''):
+    if single_file:
+        lst = [single_file]
+    else:
+        lst = os.listdir(inputdir)
     dfs = []
     for fn in lst:
-        filename = os.path.join(report_dir,fn)
+        if fn[-4:] != 'xlsx':
+            continue
+        filename = os.path.join(inputdir,fn)
         dfs.append(get_summary_from_xls(filename))
     out = pd.concat(dfs,sort=False)
-    #print(len(out))
+    print(len(out))
     out = out[~out.duplicated(subset='DTXSID')]
-    #print(len(out))
+    print(len(out))
     return out
 
 
@@ -137,7 +154,7 @@ def remove_all(caslst):
             
 if __name__ == '__main__':
     caslst = get_cas_list()        
-    out = get_all()
+    out = get_all_excel(inputdir=ci_dir)
     make_all_fingerprints(caslst=caslst,hazdf=out)
     print('Done')
     # remove_all(caslst)

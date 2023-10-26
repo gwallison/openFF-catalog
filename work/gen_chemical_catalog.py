@@ -29,10 +29,16 @@ today = datetime.today()
 
 # for nicer displays of numbers: round to significant figures.
 from math import log10, floor
-def round_sig(x, sig=2):
+def round_sig(x, sig=2,guarantee_str='??'):
     try:
-        return int(round(x, sig-int(floor(log10(abs(x))))-1))
+        if abs(x)>=1:
+            out =  int(round(x, sig-int(floor(log10(abs(x))))-1))
+            return f"{out:,d}" # does the right thing with commas
+        else: # fractional numbers
+            return str(round(x, sig-int(floor(log10(abs(x))))-1))
     except:
+        if guarantee_str:
+            return guarantee_str
         return x
 
 class Web_gen():
@@ -60,6 +66,7 @@ class Web_gen():
         #self.default_empty_fn = './website_gen/default_empty.html'
         self.jupyter_fn = './work/chemical_report.html'
         self.state_fn = './work/state_report.html'
+        self.county_fn = './work/county_report.html'
         self.operator_fn = './work/operator_report.html'
         self.ref_fn = './work/ref.csv'
         self.filtered_fields = ['PercentHFJob', 
@@ -85,6 +92,11 @@ class Web_gen():
         self.allrec = ana_set.Full_set(repo = self.repo_name,
                                           force_new_creation=True,
                                           outdir=work_pickles).get_set()
+        #!!! FILTER FOR TESTING
+        # print('WARNING: FILTER FOR TESTING IS ENABLED!')
+        # self.allrec = self.allrec[self.allrec.bgStateName=='nevada']
+        # ##
+        
         #print(f'allrec len {len(self.allrec)}')
         self.allrec['TradeName_trunc'] = np.where(self.allrec.TradeName.str.len()>30,
                                                   self.allrec.TradeName.str[:30]+'...',
@@ -92,11 +104,6 @@ class Web_gen():
         self.allrec['Purp_trunc'] = np.where(self.allrec.Purpose.str.len()>30,
                                                   self.allrec.Purpose.str[:30]+'...',
                                                   self.allrec.Purpose)
-# =============================================================================
-#         # use this to make shortened versions
-#         if caslist != []:
-#             self.allrec = self.allrec[self.allrec.bgCAS.isin(caslist)]
-# =============================================================================
         w_chem = ~(self.allrec.no_chem_recs)
         filtered = self.allrec.in_std_filtered
         self.num_events = len(self.allrec.UploadKey.unique())
@@ -122,11 +129,11 @@ class Web_gen():
             shutil.copytree(r"C:\MyDocs\OpenFF\src\openFF-catalog\pic_dir", self.images)
             shutil.copyfile(self.css_fn,
                             os.path.join(self.outdir,'style.css'))
-        else:
-            exit()
+        # else:
+        #     exit()
 
     def get_chem_infom_dataset(self):
-        mcis.get_all().to_pickle('./work/chemInfom.pkl')
+        mcis.get_all_excel().to_pickle('./work/chemInfom.pkl')
             
     def compile_page(self,title='empty title',header='',body=''):
         return f"""<!DOCTYPE html>
@@ -197,6 +204,7 @@ class Web_gen():
         sgt.num_wells_per_district(outfilename = wells_in_dist_fn)
         
     def make_chem_list(self):
+        import math
         t = self.allrec
         if self.caslist != []: # then do all
             t = t[t.bgCAS.isin(self.caslist)]
@@ -225,8 +233,11 @@ class Web_gen():
             # re-run the non-mass ones
             #if tt.bgMass.max() >0:
             #    continue
-            mx = round_sig(tt.calcMass.max())
-            print(f'{i}: ** {chem:>13} **  n recs: {len(tt):>7,}; max mass: {mx:>10,}')
+            # mx = round_sig(tt.calcMass.max())
+            mx = tt.calcMass.max()
+            # print(row)
+            # print(mx, len(tt))
+            print(f'{i}: ** {chem:>13} **  n recs: {len(tt):>7,};  max mass: {mx:>10,}')
             
             if len(tt)>0:
                 tt['map_link'] = tt.apply(lambda x: self.make_map_link(x),axis=1)
@@ -244,7 +255,16 @@ class Web_gen():
             shutil.copyfile(self.jupyter_fn,
                             os.path.join(self.outdir,chem,an_fn))
             
+    def text_APINumber(self,api):
+        # put numberic APINumber into standard format
+        t = str(api)
+        try:
+            return t[:2]+'-'+t[2:5]+'-'+t[5:10]+'-'+t[10:12]+'-'+t[12:]
+        except:
+            return api
+        
     def make_state_set(self):
+        print('Generating state set')
         t = self.allrec[(self.allrec.in_std_filtered)\
                         &(self.allrec.bgStateName.notna())\
                         &(self.allrec.loc_within_state=='YES')]
@@ -253,6 +273,7 @@ class Web_gen():
         ctlst = []
         fnlst = []
         for state in statelst:
+            print(f'----------{state}------------')
             workdf = t[t.bgStateName==state][['date','bgStateName','bgCountyName',
                                               'UploadKey','OperatorName',
                                               'TotalBaseWaterVolume',
@@ -286,8 +307,11 @@ class Web_gen():
                 z.write(tmpfn,compress_type=zipfile.ZIP_DEFLATED)
 
             workdf.to_csv('work/state.csv',index=False)
+
             for county in workdf.bgCountyName.unique().tolist():
-                fn = os.path.join(self.statesdir,county.lower().replace(' ','_')+'-'+state.lower().replace(' ','_')+'.csv')
+                print(f'  -{county}')
+                cnty_state_name = county.lower().replace(' ','_')+'-'+state.lower().replace(' ','_')
+                fn = os.path.join(self.statesdir,cnty_state_name+'.html')
                 gb = workdf[workdf.bgCountyName==county].groupby('UploadKey',as_index=False)[['date','APINumber','TotalBaseWaterVolume',
                                                                                               'bgCountyName','bgStateName',
                                                                                               'bgLatitude','bgLongitude',
@@ -296,12 +320,21 @@ class Web_gen():
                                                                                                 'is_on_PFAS_list',
                                                                                                 'is_on_volatile_list']].sum()
                 gb=pd.merge(gb,gb1,on='UploadKey',how='left')
+                gb['TBWV'] = gb.TotalBaseWaterVolume.map(lambda x: round_sig(x,3,guarantee_str='??')) + ' gallons'
+                gb.APINumber = gb.APINumber.map(lambda x: self.text_APINumber(x))
+                gb['year'] = gb.date.astype('str')
+                gb['has_chem'] = np.where(gb.no_chem_recs,'No','Yes')
                                                                                                
                 stlst.append(state)
                 ctlst.append(county)
-                fnlst.append(county.lower().replace(' ','_')+'-'+state.lower().replace(' ','_')+'.csv')
-                gb.to_csv(fn)
-
+                fnlst.append(cnty_state_name+'.html')
+                gb.to_csv('./work/county.csv')
+                self.make_county_output()
+                self.fix_county_title(cnty_state_name)
+                cn_fn = f'{cnty_state_name}.html'
+                shutil.copyfile(self.county_fn,
+                                os.path.join(self.outdir,'states',cn_fn))
+                
             print(f'** {state.title():<16} **  n recs: {len(workdf):>10,}')
             self.make_state_output()
             self.fix_state_title(state)
@@ -320,10 +353,10 @@ class Web_gen():
         gb = gb.groupby('bgOperatorName',as_index=False).size().rename({'size':'num_disc'},axis=1)
         
         oplst = gb[gb.num_disc>=min_disc].bgOperatorName.unique().tolist()
+
+        # oplst = ['chevron']
+
         print(f'Number of operators to be processed: {len(oplst)}')
-        # stlst = []
-        # ctlst = []
-        # fnlst = []
         for op in oplst:
             workdf = t[t.bgOperatorName==op][['date','bgStateName','bgCountyName',
                                               'UploadKey','OperatorName',
@@ -485,6 +518,15 @@ calculable, locations, and companies and trade-named products involved when prov
         with open(self.state_fn,'w',encoding='utf-8') as f:
             f.write(alltext)
 
+    def fix_county_title(self,cnty_state_name):
+        # also adds favicon to browser tab
+        with open(self.county_fn,'r',encoding='utf-8') as f:
+            alltext = f.read()
+        alltext  = alltext.replace('<title>county_report</title>',
+                                   f'<title>{cnty_state_name}: Open-FF report</title>\n<link rel="icon" href="https://storage.googleapis.com/open-ff-common/favicon.ico">',1)
+        with open(self.county_fn,'w',encoding='utf-8') as f:
+            f.write(alltext)
+
     def fix_operator_title(self,operator):
         # also adds favicon to browser tab
         with open(self.operator_fn,'r',encoding='utf-8') as f:
@@ -557,6 +599,11 @@ calculable, locations, and companies and trade-named products involved when prov
         subprocess.run(s)
         self.hide_map_warning(self.state_fn)
 
+    def make_county_output(self):
+        #print('in make_county_output')
+        s= 'jupyter nbconvert --no-input --ExecutePreprocessor.allow_errors=True --ExecutePreprocessor.timeout=-1 --execute work/county_report.ipynb --to=html '
+        subprocess.run(s)
+        self.hide_map_warning(self.county_fn)
 
     def gen_index_page(self,fn):
         name = fn[:-6] + '.html'
@@ -588,7 +635,7 @@ calculable, locations, and companies and trade-named products involved when prov
                'Open-FF_Auxillary_Data.ipynb',
                'Ohio_Drilling_Chemicals.ipynb',
                'FracFocus_Holes.ipynb','Make_blog_images.ipynb']
-        # lst = ['Open-FF_Operator_Index.ipynb']
+        # lst = ['Open-FF_Chemicals.ipynb']
         for fn in lst:
             if self.data_source != 'bulk':
                 if fn in onlybulk:
