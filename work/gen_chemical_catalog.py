@@ -282,7 +282,6 @@ class Web_gen():
                                               'bgLatitude','bgLongitude','no_chem_recs',
                                               'is_on_DWSHA','is_on_CWA',
                                               'is_on_PFAS_list',
-                                              'is_on_volatile_list',
                                               "loc_name_mismatch",
                                               "loc_within_county", 
                                               "loc_within_state",
@@ -296,7 +295,7 @@ class Web_gen():
                                                                                           'bgLatitude','bgLongitude','location_error',
                                                                                           'OperatorName','no_chem_recs']].first()
             gb1 = workdf.groupby('UploadKey',as_index=False)[['is_on_DWSHA','is_on_CWA',
-                                                              'is_on_PFAS_list','is_on_volatile_list']].sum()
+                                                              'is_on_PFAS_list']].sum()
             gb=pd.merge(gb,gb1,on='UploadKey',how='left')
             
             #print(gb.columns)
@@ -317,8 +316,7 @@ class Web_gen():
                                                                                               'bgLatitude','bgLongitude',
                                                                                               'OperatorName','no_chem_recs']].first()
                 gb1 = workdf[workdf.bgCountyName==county].groupby('UploadKey',as_index=False)[['is_on_DWSHA','is_on_CWA',
-                                                                                                'is_on_PFAS_list',
-                                                                                                'is_on_volatile_list']].sum()
+                                                                                                'is_on_PFAS_list']].sum()
                 gb=pd.merge(gb,gb1,on='UploadKey',how='left')
                 gb['TBWV'] = gb.TotalBaseWaterVolume.map(lambda x: round_sig(x,3,guarantee_str='??')) + ' gallons'
                 gb.APINumber = gb.APINumber.map(lambda x: self.text_APINumber(x))
@@ -367,7 +365,7 @@ class Web_gen():
                                               'bgLatitude','bgLongitude','no_chem_recs',
                                               'is_on_DWSHA','is_on_CWA',
                                               'is_on_PFAS_list','is_on_prop65','is_on_diesel',
-                                              'is_on_volatile_list','is_on_UVCB',
+                                              'is_on_UVCB',
                                               "loc_name_mismatch",
                                               "loc_within_county", 
                                               "loc_within_state",
@@ -381,7 +379,7 @@ class Web_gen():
                                                              'bgLatitude','bgLongitude','location_error',
                                                              'OperatorName','no_chem_recs']].first()
             gb1 = workdf.groupby('UploadKey',as_index=False)[['is_on_DWSHA','is_on_CWA',
-                                                              'is_on_PFAS_list','is_on_volatile_list']].sum()
+                                                              'is_on_PFAS_list']].sum()
             gb=pd.merge(gb,gb1,on='UploadKey',how='left')
             
             #print(gb.columns)
@@ -635,7 +633,7 @@ calculable, locations, and companies and trade-named products involved when prov
                'Open-FF_Auxillary_Data.ipynb',
                'Ohio_Drilling_Chemicals.ipynb',
                'FracFocus_Holes.ipynb','Make_blog_images.ipynb']
-        # lst = ['Open-FF_Chemicals.ipynb']
+        lst = ['Open-FF_Chemicals.ipynb']
         for fn in lst:
             if self.data_source != 'bulk':
                 if fn in onlybulk:

@@ -35,7 +35,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-repo_name = 'current_repo'
+repo_name = 'openFF_data_2023_10_21'
 #repo_name = 'SkyTruth_2022_09_11'
 data_source = 'bulk'  # can be 'bulk', 'FFV1_scrape' or 'SkyTruth'
                                     # or 'NM_scrape_2022_05'

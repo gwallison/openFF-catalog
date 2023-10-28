@@ -19,7 +19,7 @@ import work.gen_chemical_catalog as gen_cat
 mode = 'main'
 
 # outdir = r"C:\MyDocs\OpenFF\src\openFF-catalog\out\test"
-outdir = r"C:\MyDocs\OpenFF\src\openFF-catalog\out\cloud_repo_2023_09_20"
+outdir = r"C:\MyDocs\OpenFF\src\openFF-catalog\out\openFF_data_2023_10_21"
 #outdir = r"C:\MyDocs\OpenFF\src\openFF-catalog\out\july30_2022\website_Jul30_2022/"
 #outdir = r"C:\MyDocs\OpenFF\src\openFF-catalog\out\website_2023_03_03/"
 
@@ -47,10 +47,10 @@ else:
                          data_source=data_source)
 
 # wg.refresh_external_sets()
-wg.make_chem_list()
+# wg.make_chem_list()
 # wg.make_operator_set()
 # wg.make_state_set()
 # wg.make_scope_data()
-# wg.make_new_index_pages()
+wg.make_new_index_pages()
 # wg.save_sitemap()
 # wg.make_robot_file()
