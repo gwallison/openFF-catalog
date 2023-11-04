@@ -36,6 +36,7 @@ warnings.filterwarnings('ignore')
 
 
 repo_name = 'openFF_data_2023_10_21'
+catalog_ver = '0.1.0'
 #repo_name = 'SkyTruth_2022_09_11'
 data_source = 'bulk'  # can be 'bulk', 'FFV1_scrape' or 'SkyTruth'
                                     # or 'NM_scrape_2022_05'
@@ -72,7 +73,7 @@ def ID_header(title = '',line2 ='', subtitle = '',imagelink='',
     logoFT = """<center><a href="https://www.fractracker.org/" title="FracTracker Alliance"><img src="https://storage.googleapis.com/open-ff-common/2021_FT_logo_icon.png" alt="FracTracker logo" width="100" height="100"><br>Sponsored by FracTracker Alliance</a></center>"""
 
     if show_source:
-        source = f"""This file generated on {cat_creation_date:%B %d, %Y} from data repository: {repo_name}."""
+        source = f"""This file was generated on {cat_creation_date:%B %d, %Y} <br>from data repository: {repo_name} with code version:  {catalog_ver}."""
     else:
         source = ''
     # cat_links = f"""<td width=20%>

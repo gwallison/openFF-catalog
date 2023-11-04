@@ -412,7 +412,21 @@ class Web_gen():
     def make_scope_data(self):
         # prepare the downloadable data sets
         print('  -- working on scope data sets')
-        # water and sand data
+        # # water and sand data
+        # gb1 = self.allrec[self.allrec.in_std_filtered].groupby('UploadKey',as_index=False)\
+        #     [['TotalBaseWaterVolume','date','OperatorName','bgOperatorName',
+        #      'StateName','CountyName','APINumber','Latitude','Longitude']].first()
+        # gb1['api10'] = gb1.APINumber.str[:10]
+        # cond = self.allrec.bgCAS=='14808-60-7'
+        # gb2 = self.allrec[cond&(self.allrec.in_std_filtered)].groupby('UploadKey',as_index=False)\
+        #     ['calcMass'].sum().rename({'calcMass':'sandMass'},axis=1)
+        # out = pd.merge(gb1,gb2,on='UploadKey',how='left')
+        # out.drop('UploadKey',axis=1,inplace=True)
+        # out.to_csv(os.path.join(self.scopedir,'water_sand.zip'),
+        #            encoding='utf-8',index=False,
+        #            compression={'method': 'zip', 'archive_name': 'water_sand.csv'})
+
+        # water, sand and BTEX data
         gb1 = self.allrec[self.allrec.in_std_filtered].groupby('UploadKey',as_index=False)\
             [['TotalBaseWaterVolume','date','OperatorName','bgOperatorName',
              'StateName','CountyName','APINumber','Latitude','Longitude']].first()
@@ -420,11 +434,28 @@ class Web_gen():
         cond = self.allrec.bgCAS=='14808-60-7'
         gb2 = self.allrec[cond&(self.allrec.in_std_filtered)].groupby('UploadKey',as_index=False)\
             ['calcMass'].sum().rename({'calcMass':'sandMass'},axis=1)
+        cond = self.allrec.bgCAS=='71-43-2'
+        gb3 = self.allrec[cond&(self.allrec.in_std_filtered)].groupby('UploadKey',as_index=False)\
+            ['calcMass'].sum().rename({'calcMass':'benzene_mass'},axis=1)
+        cond = self.allrec.bgCAS=='108-88-3'
+        gb4 = self.allrec[cond&(self.allrec.in_std_filtered)].groupby('UploadKey',as_index=False)\
+            ['calcMass'].sum().rename({'calcMass':'toluene_mass'},axis=1)
+        cond = self.allrec.bgCAS=='100-41-4'
+        gb5 = self.allrec[cond&(self.allrec.in_std_filtered)].groupby('UploadKey',as_index=False)\
+            ['calcMass'].sum().rename({'calcMass':'ethylbenzene_mass'},axis=1)
+        cond = self.allrec.bgCAS=='1330-20-7'
+        gb6 = self.allrec[cond&(self.allrec.in_std_filtered)].groupby('UploadKey',as_index=False)\
+            ['calcMass'].sum().rename({'calcMass':'xylene_mass'},axis=1)
         out = pd.merge(gb1,gb2,on='UploadKey',how='left')
+        out = pd.merge(out,gb3,on='UploadKey',how='left')
+        out = pd.merge(out,gb4,on='UploadKey',how='left')
+        out = pd.merge(out,gb5,on='UploadKey',how='left')
+        out = pd.merge(out,gb6,on='UploadKey',how='left')
         out.drop('UploadKey',axis=1,inplace=True)
-        out.to_csv(os.path.join(self.scopedir,'water_sand.zip'),
+        out.to_csv(os.path.join(self.scopedir,'water_sand_btex.zip'),
                    encoding='utf-8',index=False,
-                   compression={'method': 'zip', 'archive_name': 'water_sand.csv'})
+                   compression={'method': 'zip', 'archive_name': 'water_sand_btex.csv'})
+    
         # # Well list
         # gb3 = self.allrec.groupby('api10',as_index=False)\
         #     [['APINumber','bgLatitude','bgLongitude']].first()
@@ -633,7 +664,7 @@ calculable, locations, and companies and trade-named products involved when prov
                'Open-FF_Auxillary_Data.ipynb',
                'Ohio_Drilling_Chemicals.ipynb',
                'FracFocus_Holes.ipynb','Make_blog_images.ipynb']
-        lst = ['Open-FF_Chemicals.ipynb']
+        lst = ['Open-FF_Scope_and_Aggregate_Stats.ipynb']
         for fn in lst:
             if self.data_source != 'bulk':
                 if fn in onlybulk:
