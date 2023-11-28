@@ -202,6 +202,14 @@ class Web_gen():
     def refresh_external_sets(self):
         print('  -- refreshing # wells in school districts')
         sgt.num_wells_per_district(outfilename = wells_in_dist_fn)
+
+    def make_disclosure_set(self):
+        print('making disclosure set')
+        api = '4901323437'
+        t = self.allrec[self.allrec.api10==api][['api10','bgCAS','Supplier','date','UploadKey','OperatorName']]
+        t.to_csv('work/disclosure.csv',index=False)
+        self.make_disclosure_output()
+ 
         
     def make_chem_list(self):
         import math
@@ -617,6 +625,11 @@ calculable, locations, and companies and trade-named products involved when prov
         s= 'jupyter nbconvert --no-input --ExecutePreprocessor.allow_errors=True --ExecutePreprocessor.timeout=-1 --execute work/chemical_report.ipynb --to=html '
         subprocess.run(s)
         self.hide_map_warning(self.jupyter_fn)
+
+    def make_disclosure_output(self,subfn=''):
+        s= 'jupyter nbconvert --no-input --template basic --ExecutePreprocessor.allow_errors=True --ExecutePreprocessor.timeout=-1 --execute work/disclosure_report.ipynb --to=html '
+        subprocess.run(s)
+        #self.hide_map_warning(self.jupyter_fn)
 
     def make_operator_output(self):
         s= 'jupyter nbconvert --no-input --ExecutePreprocessor.allow_errors=True --ExecutePreprocessor.timeout=-1 --execute work/operator_report.ipynb --to=html '

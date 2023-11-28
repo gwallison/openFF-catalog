@@ -35,13 +35,13 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-repo_name = 'openFF_data_2023_10_21'
+repo_name = 'openFF_data_2023_11_25'
 catalog_ver = '0.1.0'
 #repo_name = 'SkyTruth_2022_09_11'
 data_source = 'bulk'  # can be 'bulk', 'FFV1_scrape' or 'SkyTruth'
                                     # or 'NM_scrape_2022_05'
 
-bulkdata_date = 'October 21, 2023'
+bulkdata_date = 'November 25, 2023'
 cat_creation_date = datetime.datetime.now()
 extData_loc = 'c:/MyDocs/OpenFF/data/external_refs/'
 transformed_loc = 'c:/MyDocs/OpenFF/data/transformed/'

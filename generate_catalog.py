@@ -47,10 +47,11 @@ else:
                          data_source=data_source)
 
 # wg.refresh_external_sets()
+wg.make_disclosure_set()
 # wg.make_chem_list()
 # wg.make_operator_set()
 # wg.make_state_set()
 # wg.make_scope_data()
-wg.make_new_index_pages()
+# wg.make_new_index_pages()
 # wg.save_sitemap()
 # wg.make_robot_file()
