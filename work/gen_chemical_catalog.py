@@ -65,6 +65,7 @@ class Web_gen():
         self.css_fn = './work/style.css'
         #self.default_empty_fn = './website_gen/default_empty.html'
         self.jupyter_fn = './work/chemical_report.html'
+        self.no_data_fn = './work/chemical_report_no_data.html'
         self.state_fn = './work/state_report.html'
         self.county_fn = './work/county_report.html'
         self.operator_fn = './work/operator_report.html'
@@ -238,15 +239,22 @@ class Web_gen():
             
             tt = self.allrec[self.allrec.bgCAS==chem]
             tt = tt.filter(self.filtered_fields,axis=1).copy()
-            # re-run the non-mass ones
-            #if tt.bgMass.max() >0:
-            #    continue
-            # mx = round_sig(tt.calcMass.max())
             mx = tt.calcMass.max()
-            # print(row)
-            # print(mx, len(tt))
-            print(f'{i}: ** {chem:>13} **  n recs: {len(tt):>7,};  max mass: {mx:>10,}')
             
+            # NO DATA IN FILTERED SET - Reroute
+            if tt.in_std_filtered.sum()==0:
+                tt.to_csv('work/data.csv',index=False)
+                tt.to_csv(os.path.join(self.outdir,chem,'data.zip'),index=False,
+                          compression={'method': 'zip', 'archive_name': 'data.csv'})
+                self.make_no_data_output()
+                self.fix_no_data_html(chem,ing,0,mx)
+                an_fn = f'analysis_{chem}.html'
+                shutil.copyfile(self.no_data_fn,
+                                os.path.join(self.outdir,chem,an_fn))
+                print(f'{i}: ** {chem:>13} **  n recs: {len(tt):>7,};  max mass: {mx:>10,} - NO FILTERED DATA')
+                continue             
+            
+            print(f'{i}: ** {chem:>13} **  n recs: {len(tt):>7,};  max mass: {mx:>10,}')               
             if len(tt)>0:
                 tt['map_link'] = tt.apply(lambda x: self.make_map_link(x),axis=1)
             else:
@@ -280,6 +288,7 @@ class Web_gen():
         stlst = []
         ctlst = []
         fnlst = []
+        
         for state in statelst:
             print(f'----------{state}------------')
             workdf = t[t.bgStateName==state][['date','bgStateName','bgCountyName',
@@ -546,6 +555,28 @@ calculable, locations, and companies and trade-named products involved when prov
         with open(self.jupyter_fn,'w',encoding='utf-8') as f:
             f.write(alltext)
             
+    def fix_no_data_html(self,cas,ing,num_recs,mxmass):
+        # also adds favicon to browser tab
+        with open(self.no_data_fn,'r',encoding='utf-8') as f:
+            alltext = f.read()
+        alltext  = alltext.replace('<title>chemical_report</title>',
+                                   f'<title>{cas}: Open-FF report</title>\n<link rel="icon" href="https://storage.googleapis.com/open-ff-common/favicon.ico">',1)
+        des = f"""{ing} (CASRN {cas}): Analysis of FracFocus records of this material including mass, when
+calculable, locations, and companies and trade-named products involved when provided."""
+        if num_recs>0:
+            des += f" Currently {num_recs:,} record(s) have been reported."""
+        else:
+            des += "  While some records exist for this chemical, no records are available for this chemical in the standard filtered set."
+        if mxmass>0:
+            des += f""" The maximum calculated mass reported in a single fracking event is approx. {mxmass:,} pounds."""
+        if not cas[0].isnumeric():
+            des = f"""Analysis of FracFocus records classified as <{cas}> (not resolvable to a specific CASRN)."""
+        des += " The analyses in this script-generated report are performed by the independent project, Open-FF."
+        
+        alltext = alltext.replace('<head>',
+                                  f'<head>\n<meta name="description" content="{des}">\n')
+        with open(self.jupyter_fn,'w',encoding='utf-8') as f:
+            f.write(alltext)
     def fix_state_title(self,state):
         # also adds favicon to browser tab
         with open(self.state_fn,'r',encoding='utf-8') as f:
@@ -623,6 +654,11 @@ calculable, locations, and companies and trade-named products involved when prov
         
     def make_jupyter_output(self,subfn=''):
         s= 'jupyter nbconvert --no-input --ExecutePreprocessor.allow_errors=True --ExecutePreprocessor.timeout=-1 --execute work/chemical_report.ipynb --to=html '
+        subprocess.run(s)
+        self.hide_map_warning(self.jupyter_fn)
+
+    def make_no_data_output(self,subfn=''):
+        s= 'jupyter nbconvert --no-input --ExecutePreprocessor.allow_errors=True --ExecutePreprocessor.timeout=-1 --execute work/chemical_report_no_data.ipynb --to=html '
         subprocess.run(s)
         self.hide_map_warning(self.jupyter_fn)
 

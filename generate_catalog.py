@@ -15,11 +15,11 @@ import work.gen_chemical_catalog as gen_cat
 # if c in ['n','N']:
 #     exit()
 
-# mode = 'test'
-mode = 'main'
+mode = 'test'
+# mode = 'main'
 
 # outdir = r"C:\MyDocs\OpenFF\src\openFF-catalog\out\test"
-outdir = r"C:\MyDocs\OpenFF\src\openFF-catalog\out\openFF_browser_2023_10_21"
+outdir = r"C:\MyDocs\OpenFF\src\openFF-catalog\out\openFF_browser_2023_12_19_FFV4"
 #outdir = r"C:\MyDocs\OpenFF\src\openFF-catalog\out\july30_2022\website_Jul30_2022/"
 #outdir = r"C:\MyDocs\OpenFF\src\openFF-catalog\out\website_2023_03_03/"
 
@@ -38,7 +38,7 @@ if mode=='test':
                             #             '111560-38-4','320-31-0',
                             #             '100-44-7','100-79-8',
                             #             'proprietary'],
-                           caslist=['proprietary','107-21-1'],
+                           caslist=['107-21-1'],
                            data_source=data_source)
 else:
     wg = gen_cat.Web_gen(repo_name=repo_name,
@@ -47,11 +47,11 @@ else:
                          data_source=data_source)
 
 # wg.refresh_external_sets()
-wg.make_disclosure_set()
-# wg.make_chem_list()
-# wg.make_operator_set()
-# wg.make_state_set()
-# wg.make_scope_data()
-# wg.make_new_index_pages()
-# wg.save_sitemap()
-# wg.make_robot_file()
+# wg.make_disclosure_set()
+wg.make_chem_list()
+wg.make_operator_set()
+wg.make_state_set()
+#wg.make_scope_data()
+#wg.make_new_index_pages()
+#wg.save_sitemap()
+#wg.make_robot_file()

@@ -35,13 +35,13 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-repo_name = 'openFF_data_2023_11_25'
+repo_name = 'openFF_data_2023_12_19_FFV4'
 catalog_ver = '0.1.0'
 #repo_name = 'SkyTruth_2022_09_11'
 data_source = 'bulk'  # can be 'bulk', 'FFV1_scrape' or 'SkyTruth'
                                     # or 'NM_scrape_2022_05'
 
-bulkdata_date = 'November 25, 2023'
+bulkdata_date = 'December 19, 2023'
 cat_creation_date = datetime.datetime.now()
 extData_loc = 'c:/MyDocs/OpenFF/data/external_refs/'
 transformed_loc = 'c:/MyDocs/OpenFF/data/transformed/'
@@ -249,6 +249,18 @@ def getOpLink(opname,text_to_show='Operator details',use_remote=False,up_level=F
     s = f'{preamble}operators/{opname}.html'
     return ggmap.wrap_URL_in_html(s,text_to_show)
 
+def getDisclosureLink(APINumber,uploadkey,text_to_show='disclosure',
+                      use_remote=False,up_level=True):
+    preamble = ''
+    if use_remote:
+        preamble = 'https://storage.googleapis.com/open-ff-browser/'
+    if up_level:
+        preamble = '../'
+    APINumber = str(APINumber)
+    api5 = APINumber.replace('-','')[:5]
+    s =  f'{preamble}disclosures/{api5}/{uploadkey}.html'
+    return ggmap.wrap_URL_in_html(s,text_to_show)    
+
 def getStateLink(state,text_to_show='State details',use_remote=False):
     preamble = 'states'
     if use_remote:
@@ -443,7 +455,7 @@ def fix_county_names(df):
         df.CountyName = np.where(df.CountyName==wrong,trans[wrong],df.CountyName)
     return df
 
-def create_point_map(data,include_mini_map=False,include_shape=False,area_df=None,
+def create_point_map(data,include_mini_map=False,inc_disc_link=True,include_shape=False,area_df=None,
                      fields=['APINumber','TotalBaseWaterVolume','year','OperatorName','ingKeyPresent'],
                      aliases=['API Number','Water Volume','year','Operator','has chem recs'],
                      width=600,height=400):
@@ -530,6 +542,7 @@ def create_state_choropleth(data,
                             fields = ['StateName','orig_value'],
                             aliases = ['State: ','data: '],
                             width=600,height=400):
+    #print(custom_scale)
     fn = r"C:\MyDocs\OpenFF\data\non-FF\georef-united-states-of-america-state.geojson"
     geojson = gpd.read_file(fn)
     data['orig_value'] = data.value
@@ -548,6 +561,7 @@ def create_state_choropleth(data,
         geojson.value = np.log10(geojson.value+1)
         legend_name = legend_name + ' (log transformed)'
     geojson.orig_value.fillna('no data',inplace=True)
+    #print(geojson[['StateName','value']])
     
     if custom_scale==[]:
         custom_scale = (geojson['value'].quantile((0,0.2,0.4,0.6,0.8,1))).tolist()

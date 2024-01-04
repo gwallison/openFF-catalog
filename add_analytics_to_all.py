@@ -85,5 +85,6 @@ def walk_all_files(filepath,version='google'):
 
 if __name__ == '__main__':
     dirpath = r"C:\MyDocs\OpenFF\src\openFF-catalog\out\current_browser"
+    #dirpath = r"C:\MyDocs\OpenFF\src\openFF-catalog\out\openFF_browser_2023_11_25"
     create_index(dirpath)
     walk_all_files(dirpath,version='google')
